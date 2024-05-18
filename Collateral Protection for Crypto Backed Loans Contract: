@@ -1,0 +1,39 @@
+pragma solidity ^0.8.0;
+
+contract CollateralProtection {
+    mapping(address => uint) public loans;
+    mapping(address => uint) public collateral;
+    mapping(address => bool) public insured;
+
+    // Define policies
+    enum Policy { FullReturn, PartialReturn }
+
+    // Define events
+    event LoanTaken(address indexed user, uint amount);
+    event InsuranceApplied(address indexed user, uint amount);
+
+    // Function to take loan
+    function takeLoan(uint amount) external {
+        // Implement logic to check collateral and approve loan
+        loans[msg.sender] += amount;
+        emit LoanTaken(msg.sender, amount);
+    }
+
+    // Function to apply insurance
+    function applyInsurance(Policy policy) external {
+        // Implement logic to determine insurance coverage based on policy
+        insured[msg.sender] = true;
+        emit InsuranceApplied(msg.sender, loans[msg.sender]);
+    }
+
+    // Function to calculate loan return based on insurance
+    function calculateReturn() external view returns(uint) {
+        if (insured[msg.sender]) {
+            // Implement logic for insurance coverage
+            // For simplicity, let's assume 50% coverage for PartialReturn policy
+            return loans[msg.sender] / 2;
+        } else {
+            return 0;
+        }
+    }
+}
