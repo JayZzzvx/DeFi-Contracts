@@ -1,0 +1,31 @@
+pragma solidity ^0.8.0;
+
+contract CryptoWalletInsurance {
+    mapping(address => uint) public premiums;
+    mapping(address => uint) public payouts;
+
+    // Define policies
+    enum Policy { Basic, Advanced }
+
+    // Define events
+    event PremiumPaid(address indexed user, uint amount);
+    event InsuranceClaimed(address indexed user, uint amount);
+
+    // Function to pay premium
+    function payPremium(Policy policy) external payable {
+        // Implement logic to determine premium amount based on policy
+        premiums[msg.sender] += msg.value;
+        emit PremiumPaid(msg.sender, msg.value);
+    }
+
+    // Function to claim insurance
+    function claimInsurance() external {
+        // Implement checks for insured event and payout logic
+        // For simplicity, let's assume anyone can claim insurance anytime
+        require(payouts[msg.sender] == 0, "Insurance already claimed");
+        payouts[msg.sender] = premiums[msg.sender];
+        premiums[msg.sender] = 0;
+        payable(msg.sender).transfer(payouts[msg.sender]);
+        emit InsuranceClaimed(msg.sender, payouts[msg.sender]);
+    }
+}
